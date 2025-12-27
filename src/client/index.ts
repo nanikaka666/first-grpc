@@ -1,35 +1,22 @@
-import { credentials, loadPackageDefinition } from "@grpc/grpc-js";
-import * as ProtoLoader from "@grpc/proto-loader";
-
-import type { ProtoGrpcType } from "../protoDist/hello";
-import { makeGenericClientConstructor } from "@grpc/grpc-js";
-import { HelloServiceClient } from "../protoDist/HelloService";
-import { SayHelloRequest } from "../protoDist/SayHelloRequest";
-import { SayHelloResponse } from "../protoDist/SayHelloResponse";
+import { credentials } from "@grpc/grpc-js";
+import { HelloServiceClient } from "../generatedPb/proto/hello_grpc_pb";
+import {
+    SayHelloRequest,
+    SayHelloResponse,
+} from "../generatedPb/proto/hello_pb";
 
 async function main() {
-    const packageDefinition = ProtoLoader.loadSync("./proto/hello.proto");
-    const loadedPackageDefinition = loadPackageDefinition(
-        packageDefinition
-    ) as unknown as ProtoGrpcType;
-
-    const Client = makeGenericClientConstructor(
-        loadedPackageDefinition.HelloService.service,
-        ".HelloService/SayHello"
-    );
-
-    const client = new Client(
+    const client = new HelloServiceClient(
         "localhost:9000",
         credentials.createInsecure()
-    ) as unknown as HelloServiceClient;
+    );
 
-    const request: SayHelloRequest = {
-        num: 33,
-        reqArg: "Client!!",
-    };
+    const request = new SayHelloRequest();
+    request.setNum(999);
+    request.setReqarg("Protoc gen!!");
 
     const response = await new Promise<SayHelloResponse>((resolve, reject) => {
-        client.SayHello(request, (error, value) => {
+        client.sayHello(request, (error, value) => {
             if (error) {
                 console.log(error);
                 reject(error);
@@ -37,12 +24,13 @@ async function main() {
             if (!value) {
                 console.log("undefined");
                 reject();
+            } else {
+                resolve(value);
             }
-            resolve(value as SayHelloResponse);
         });
     });
 
-    console.log(`Client call response: ${response.resString}`);
+    console.log(`Client call response: ${response.getResstring()}`);
 }
 
 (async () => {
