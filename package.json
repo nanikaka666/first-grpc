@@ -4,7 +4,7 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "proto-gen": "rm -rf protoDist/ && mkdir -p protoDist && proto-loader-gen-types --longs=Number --enums=String --defaults --oneofs --keep-case --grpcLib=@grpc/grpc-js -O ./protoDist ./proto/*.proto"
+        "proto-gen": "rm -rf src/protoDist/ && mkdir -p src/protoDist && proto-loader-gen-types --longs=Number --enums=String --defaults --oneofs --keep-case --grpcLib=@grpc/grpc-js -O ./src/protoDist ./proto/*.proto"
     },
     "keywords": [],
     "author": "",
