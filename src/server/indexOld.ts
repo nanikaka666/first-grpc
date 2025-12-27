@@ -1,40 +1,34 @@
 import {
-    handleUnaryCall,
+    loadPackageDefinition,
     Server,
     ServerCredentials,
-    UntypedHandleCall,
 } from "@grpc/grpc-js";
 import * as ProtoLoader from "@grpc/proto-loader";
 import { ReflectionService } from "@grpc/reflection";
-import {
-    HelloServiceService,
-    IHelloServiceServer,
-} from "../generatedPb/proto/hello_grpc_pb";
-import {
-    SayHelloRequest,
-    SayHelloResponse,
-} from "../generatedPb/proto/hello_pb";
 
-class ServerImpl implements IHelloServiceServer {
-    [name: string]: UntypedHandleCall;
-    sayHello: handleUnaryCall<SayHelloRequest, SayHelloResponse> = (
-        call,
-        callback
-    ) => {
-        const res = new SayHelloResponse();
-        res.setResstring(
-            `hoge Hello ${call.request.getReqarg()} ${call.request.getNum()}`
-        );
+import type { ProtoGrpcType } from "../protoDist/hello";
+import { HelloServiceHandlers } from "../protoDist/HelloService";
+import { SayHelloResponse } from "../protoDist/SayHelloResponse";
+
+const handler: HelloServiceHandlers = {
+    SayHello(call, callback) {
+        const res: SayHelloResponse = {
+            resString: `Hello ${call.request.reqArg} ${call.request.num}`,
+        };
         callback(null, res);
-    };
-}
+    },
+};
 
 function main() {
     const server = new Server();
 
-    server.addService(HelloServiceService, new ServerImpl());
-
     const packageDefinition = ProtoLoader.loadSync("./proto/hello.proto");
+    const loadedPackageDefinition = loadPackageDefinition(
+        packageDefinition
+    ) as unknown as ProtoGrpcType;
+
+    server.addService(loadedPackageDefinition.HelloService.service, handler);
+
     const reflection = new ReflectionService(packageDefinition);
     reflection.addToServer(server);
 
