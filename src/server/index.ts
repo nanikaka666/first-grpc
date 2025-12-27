@@ -4,6 +4,7 @@ import {
     ServerCredentials,
 } from "@grpc/grpc-js";
 import * as ProtoLoader from "@grpc/proto-loader";
+import { ReflectionService } from "@grpc/reflection";
 
 import type { ProtoGrpcType } from "../protoDist/hello";
 import { HelloServiceHandlers } from "../protoDist/HelloService";
@@ -27,6 +28,9 @@ function main() {
     ) as unknown as ProtoGrpcType;
 
     server.addService(loadedPackageDefinition.HelloService.service, handler);
+
+    const reflection = new ReflectionService(packageDefinition);
+    reflection.addToServer(server);
 
     server.bindAsync(
         "0.0.0.0:9000",
