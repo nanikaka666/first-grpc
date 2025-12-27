@@ -5,7 +5,8 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "proto-gen": "rm -rf src/protoDist/ && mkdir -p src/protoDist && proto-loader-gen-types --longs=Number --enums=String --defaults --oneofs --keep-case --grpcLib=@grpc/grpc-js -O ./src/protoDist ./proto/*.proto",
-        "start:server": "tsc && node ./dist/server/index.js"
+        "start:server": "tsc && node ./dist/server/index.js",
+        "start:client": "tsc && node ./dist/client/index.js"
     },
     "keywords": [],
     "author": "",
@@ -18,6 +19,8 @@
     },
     "devDependencies": {
         "@types/node": "^25.0.3",
+        "grpc-tools": "^1.13.1",
+        "ts-protoc-gen": "^0.15.0",
         "typescript": "^5.9.3"
     }
 }
