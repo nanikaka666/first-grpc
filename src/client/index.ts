@@ -68,6 +68,8 @@ async function googleWithApiKey() {
 
     let pageToken: string | undefined;
     let isContinue = true;
+    let callNum = 0;
+    let time = new Date().getTime();
 
     while (isContinue) {
         const request = new LiveChatMessageListRequest();
@@ -77,7 +79,14 @@ async function googleWithApiKey() {
             request.setPageToken(pageToken);
         }
 
-        console.log("***** Calling ******");
+        const nextTime = new Date().getTime();
+
+        console.log(
+            `***** Calling (${++callNum}) ${
+                (nextTime - time) / 1000
+            } sec. ******`
+        );
+        time = nextTime;
         await client.streamList(request, metadata).forEach((data) => {
             const res: LiveChatMessageListResponse.AsObject = (
                 data as LiveChatMessageListResponse
