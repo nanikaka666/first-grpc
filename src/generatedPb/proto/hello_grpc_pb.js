@@ -39,6 +39,17 @@ var HelloServiceService = exports.HelloServiceService = {
     responseSerialize: serialize_SayHelloResponse,
     responseDeserialize: deserialize_SayHelloResponse,
   },
+  sayManyHello: {
+    path: '/HelloService/SayManyHello',
+    requestStream: false,
+    responseStream: true,
+    requestType: proto_hello_pb.SayHelloRequest,
+    responseType: proto_hello_pb.SayHelloResponse,
+    requestSerialize: serialize_SayHelloRequest,
+    requestDeserialize: deserialize_SayHelloRequest,
+    responseSerialize: serialize_SayHelloResponse,
+    responseDeserialize: deserialize_SayHelloResponse,
+  },
 };
 
 exports.HelloServiceClient = grpc.makeGenericClientConstructor(HelloServiceService, 'HelloService');

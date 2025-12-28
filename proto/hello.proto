@@ -2,6 +2,7 @@ syntax = "proto3";
 
 service HelloService {
   rpc SayHello(SayHelloRequest) returns (SayHelloResponse) {}
+  rpc SayManyHello(SayHelloRequest) returns (stream SayHelloResponse) {}
 }
 
 message SayHelloRequest {
