@@ -1,16 +1,11 @@
-import { credentials, Metadata } from "@grpc/grpc-js";
+import { credentials } from "@grpc/grpc-js";
 import { HelloServiceClient } from "../generatedPb/proto/hello_grpc_pb";
 import {
     SayHelloRequest,
     SayHelloResponse,
 } from "../generatedPb/proto/hello_pb";
 
-import * as json from "./../../credentials.json";
-import {
-    LiveChatMessageListRequest,
-    LiveChatMessageListResponse,
-} from "../generatedPb/proto/stream_list_pb";
-import { V3DataLiveChatMessageServiceClient } from "../generatedPb/proto/stream_list_grpc_pb";
+import { googleWithApiKey } from "./google";
 
 async function main() {
     const client = new HelloServiceClient(
@@ -45,67 +40,6 @@ async function main() {
         const res: SayHelloResponse = data;
         console.log(`Streaming: ${res.getResstring()}`);
     });
-
-    console.log("End Stream");
-}
-
-async function googleWithApiKey() {
-    if (!process.argv[2]) {
-        throw new Error("Pass LiveChatId");
-    }
-
-    const liveChatId = process.argv[2];
-
-    const client = new V3DataLiveChatMessageServiceClient(
-        "youtube.googleapis.com:443",
-        credentials.createSsl()
-    );
-
-    const metadata = new Metadata();
-    metadata.set("x-goog-api-key", json.apiKey);
-
-    console.log("Start Stream");
-
-    let pageToken: string | undefined;
-    let isContinue = true;
-    let callNum = 0;
-    let time = new Date().getTime();
-
-    while (isContinue) {
-        const request = new LiveChatMessageListRequest();
-        request.setLiveChatId(liveChatId);
-        request.setPartList(["snippet", "authorDetails"]);
-        if (pageToken) {
-            request.setPageToken(pageToken);
-        }
-
-        const nextTime = new Date().getTime();
-
-        console.log(
-            `***** Calling (${++callNum}) ${
-                (nextTime - time) / 1000
-            } sec. ******`
-        );
-        time = nextTime;
-        await client.streamList(request, metadata).forEach((data) => {
-            const res: LiveChatMessageListResponse.AsObject = (
-                data as LiveChatMessageListResponse
-            ).toObject();
-
-            res.itemsList.forEach((message) => {
-                console.log(
-                    `${message.authorDetails?.displayName}: ${message.snippet?.displayMessage}`
-                );
-            });
-
-            if (res.nextPageToken) {
-                pageToken = res.nextPageToken;
-            }
-            if (res.offlineAt) {
-                isContinue = false;
-            }
-        });
-    }
 
     console.log("End Stream");
 }
