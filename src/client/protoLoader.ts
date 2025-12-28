@@ -7,7 +7,7 @@ import { HelloServiceClient } from "../protoDist/HelloService";
 import { SayHelloRequest } from "../protoDist/SayHelloRequest";
 import { SayHelloResponse } from "../protoDist/SayHelloResponse";
 
-async function main() {
+async function useProtoLoader() {
     const packageDefinition = ProtoLoader.loadSync("./proto/hello.proto");
     const loadedPackageDefinition = loadPackageDefinition(
         packageDefinition
@@ -44,7 +44,3 @@ async function main() {
 
     console.log(`Client call response: ${response.resString}`);
 }
-
-(async () => {
-    await main();
-})();
