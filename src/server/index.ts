@@ -1,4 +1,5 @@
 import {
+    handleServerStreamingCall,
     handleUnaryCall,
     Server,
     ServerCredentials,
@@ -27,6 +28,22 @@ class ServerImpl implements IHelloServiceServer {
         );
         callback(null, res);
     };
+    sayManyHello: handleServerStreamingCall<SayHelloRequest, SayHelloResponse> =
+        async (call) => {
+            for (let i = 0; i < 10; i++) {
+                const res = new SayHelloResponse();
+                res.setResstring(
+                    `${
+                        i + 1
+                    }: ${call.request.getReqarg()} - ${call.request.getNum()}`
+                );
+                call.write(res);
+                await new Promise((resolve, _) => {
+                    setTimeout(() => resolve(1), 1 * 1000);
+                });
+            }
+            call.end();
+        };
 }
 
 function main() {

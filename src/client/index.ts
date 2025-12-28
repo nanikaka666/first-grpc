@@ -31,6 +31,15 @@ async function main() {
     });
 
     console.log(`Client call response: ${response.getResstring()}`);
+
+    console.log("Start Stream");
+
+    await client.sayManyHello(request).forEach((data) => {
+        const res: SayHelloResponse = data;
+        console.log(`Streaming: ${res.getResstring()}`);
+    });
+
+    console.log("End Stream");
 }
 
 (async () => {
