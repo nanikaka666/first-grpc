@@ -49,7 +49,13 @@ async function main() {
     console.log("End Stream");
 }
 
-async function google() {
+async function googleWithApiKey() {
+    if (!process.argv[2]) {
+        throw new Error("Pass LiveChatId");
+    }
+
+    const liveChatId = process.argv[2];
+
     const client = new V3DataLiveChatMessageServiceClient(
         "youtube.googleapis.com:443",
         credentials.createSsl()
@@ -65,9 +71,7 @@ async function google() {
 
     while (isContinue) {
         const request = new LiveChatMessageListRequest();
-        request.setLiveChatId(
-            "Cg0KC3FaLWwyNlFOaENZKicKGFVDelVOQVNkekk0UFY1U2xxdFl3QWtLURILcVotbDI2UU5oQ1k"
-        );
+        request.setLiveChatId(liveChatId);
         request.setPartList(["snippet", "authorDetails"]);
         if (pageToken) {
             request.setPageToken(pageToken);
@@ -99,5 +103,5 @@ async function google() {
 
 (async () => {
     // await main();
-    await google();
+    await googleWithApiKey();
 })();
