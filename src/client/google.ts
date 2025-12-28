@@ -6,7 +6,7 @@ import {
 } from "../generatedPb/proto/stream_list_pb";
 import { V3DataLiveChatMessageServiceClient } from "../generatedPb/proto/stream_list_grpc_pb";
 
-export async function googleWithApiKey() {
+async function callStreamList(metadata: Metadata) {
     if (!process.argv[2]) {
         throw new Error("Pass LiveChatId");
     }
@@ -17,9 +17,6 @@ export async function googleWithApiKey() {
         "youtube.googleapis.com:443",
         credentials.createSsl()
     );
-
-    const metadata = new Metadata();
-    metadata.set("x-goog-api-key", json.apiKey);
 
     console.log("Start Stream");
 
@@ -65,4 +62,20 @@ export async function googleWithApiKey() {
     }
 
     console.log("End Stream");
+}
+
+export async function googleWithApiKey() {
+    const metadata = new Metadata();
+    metadata.set("x-goog-api-key", json.apiKey);
+
+    console.log("with API Key");
+    await callStreamList(metadata);
+}
+
+export async function googleWithAccessToken() {
+    const metadata = new Metadata();
+    metadata.set("authorization", `Bearer ${json.accessToken}`);
+
+    console.log("with Access Token");
+    await callStreamList(metadata);
 }

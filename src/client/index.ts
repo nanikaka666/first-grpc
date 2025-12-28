@@ -1,5 +1,6 @@
-import { googleWithApiKey } from "./google";
+import { googleWithAccessToken, googleWithApiKey } from "./google";
 
 (async () => {
-    await googleWithApiKey();
+    // await googleWithApiKey();
+    await googleWithAccessToken();
 })();
