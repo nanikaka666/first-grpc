@@ -5,7 +5,7 @@ import {
     SayHelloResponse,
 } from "../generatedPb/proto/hello_pb";
 
-async function helloServiceClient() {
+export async function helloServiceClient() {
     const client = new HelloServiceClient(
         "localhost:9000",
         credentials.createInsecure()

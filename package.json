@@ -5,8 +5,8 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "proto-gen": "rm -rf src/protoDist/ && mkdir -p src/protoDist && proto-loader-gen-types --longs=Number --enums=String --defaults --oneofs --keep-case --grpcLib=@grpc/grpc-js -O ./src/protoDist ./proto/*.proto",
-        "start:server": "tsc && node ./dist/server/index.js",
-        "start:client": "tsc && node ./dist/client/index.js"
+        "start:server": "tsc && node ./dist/src/server/index.js",
+        "start:client": "tsc && node ./dist/src/client/index.js"
     },
     "keywords": [],
     "author": "",
